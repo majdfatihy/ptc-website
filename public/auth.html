@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول والتسجيل - PTC Earn</title>
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Login Form -->
+        <div id="login-form" class="auth-form active">
+            <div class="form-header">
+                <h1>💰 PTC Earn</h1>
+                <p>تسجيل الدخول إلى حسابك</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                    <input type="email" id="login-email" placeholder="أدخل بريدك الإلكتروني" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="login-password" placeholder="أدخل كلمة المرور" required>
+                </div>
+                <button type="submit" class="btn-submit">تسجيل الدخول</button>
+            </form>
+            <p class="form-footer">ليس لديك حساب؟ <a href="javascript:toggleForms()">سجل الآن</a></p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="auth-form">
+            <div class="form-header">
+                <h1>💰 PTC Earn</h1>
+                <p>إنشاء حساب جديد</p>
+            </div>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> الاسم الكامل</label>
+                    <input type="text" id="register-name" placeholder="أدخل اسمك الكامل" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                    <input type="email" id="register-email" placeholder="أدخل بريدك الإلكتروني" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="register-password" placeholder="اختر كلمة مرور قوية" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-globe"></i> الدولة</label>
+                    <select id="register-country" required>
+                        <option value="">اختر دولتك</option>
+                        <option value="Egypt">مصر</option>
+                        <option value="Saudi Arabia">السعودية</option>
+                        <option value="UAE">الإمارات</option>
+                        <option value="Kuwait">الكويت</option>
+                        <option value="Qatar">قطر</option>
+                        <option value="Jordan">الأردن</option>
+                        <option value="Lebanon">لبنان</option>
+                        <option value="Palestine">فلسطين</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">إنشاء الحساب</button>
+            </form>
+            <p class="form-footer">هل لديك حساب بالفعل؟ <a href="javascript:toggleForms()">تسجيل دخول</a></p>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        function toggleForms() {
+            document.getElementById('login-form').classList.toggle('active');
+            document.getElementById('register-form').classList.toggle('active');
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const result = await api.login(email, password);
+                if (result.success && result.token) {
+                    api.setToken(result.token);
+                    localStorage.setItem('userRole', result.user.role || 'user');
+                    showNotification('تم تسجيل الدخول بنجاح! 🎉', 'success');
+                    setTimeout(() => {
+                        window.location.href = result.user.role === 'admin' 
+                            ? '/public/dashboard-admin.html' 
+                            : '/public/dashboard-user.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                showNotification('خطأ في البريد أو كلمة المرور', 'error');
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const country = document.getElementById('register-country').value;
+
+            try {
+                const result = await api.register(name, email, password, country);
+                if (result.success && result.token) {
+                    api.setToken(result.token);
+                    localStorage.setItem('userRole', 'user');
+                    showNotification('تم إنشاء الحساب بنجاح! 🎉', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/public/dashboard-user.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                showNotification('حدث خطأ في التسجيل. تحقق من البيانات', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
