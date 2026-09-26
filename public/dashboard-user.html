@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم العملاء - PTC Earn</title>
+    <link rel="stylesheet" href="/css/dashboard-user.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>💰 PTC Earn</h2>
+                <button class="toggle-sidebar"><i class="fas fa-bars"></i></button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i> <span>الرئيسية</span>
+                </a>
+                <a href="#tasks" class="nav-item" data-page="tasks">
+                    <i class="fas fa-tasks"></i> <span>المهام</span>
+                </a>
+                <a href="#earnings" class="nav-item" data-page="earnings">
+                    <i class="fas fa-chart-line"></i> <span>الأرباح</span>
+                </a>
+                <a href="#referrals" class="nav-item" data-page="referrals">
+                    <i class="fas fa-users"></i> <span>الإحالات</span>
+                </a>
+                <a href="#withdrawal" class="nav-item" data-page="withdrawal">
+                    <i class="fas fa-money-bill"></i> <span>السحب</span>
+                </a>
+                <a href="#profile" class="nav-item" data-page="profile">
+                    <i class="fas fa-user"></i> <span>الملف الشخصي</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <h1 id="page-title">الرئيسية</h1>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">0</span>
+                    </div>
+                    <div class="user-info">
+                        <img id="user-avatar" src="https://via.placeholder.com/40" alt="User">
+                        <div>
+                            <p id="user-name">المستخدم</p>
+                            <small id="user-email">email@example.com</small>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page-content active">
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>الرصيد الحالي</h3>
+                            <p class="stat-value" id="current-balance">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>إجمالي الأرباح</h3>
+                            <p class="stat-value" id="total-earned">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>المهام المنجزة</h3>
+                            <p class="stat-value" id="tasks-count">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>الأصدقاء المُحالين</h3>
+                            <p class="stat-value" id="referrals-count">0</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h2>نشاطاتك الأخيرة</h2>
+                        <div id="recent-activities" class="activity-list">
+                            <p class="text-muted">لا توجد نشاطات بعد</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h2>كود الإحالة الخاص بك</h2>
+                        <div class="referral-box">
+                            <input type="text" id="referral-code" readonly>
+                            <button onclick="copyReferralCode()" class="btn-copy"><i class="fas fa-copy"></i></button>
+                        </div>
+                        <p class="text-muted">شارك هذا الكود مع أصدقائك واكسب 20% من أرباحهم</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Page -->
+            <div id="tasks-page" class="page-content">
+                <div class="filter-bar">
+                    <select id="task-filter" class="filter-select">
+                        <option value="all">جميع المهام</option>
+                        <option value="ad_view">مشاهدة إعلانات</option>
+                        <option value="survey">استبيانات</option>
+                        <option value="app_test">اختبار تطبيقات</option>
+                        <option value="email_signup">الاشتراك عبر البريد</option>
+                    </select>
+                </div>
+                <div id="tasks-list" class="tasks-grid"></div>
+            </div>
+
+            <!-- Earnings Page -->
+            <div id="earnings-page" class="page-content">
+                <div class="earnings-summary">
+                    <div class="summary-card">
+                        <h3>الأرباح المعتمدة</h3>
+                        <p id="approved-earnings" class="amount">$0.00</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>الأرباح المعلقة</h3>
+                        <p id="pending-earnings" class="amount">$0.00</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>سجل الأرباح</h2>
+                    <div id="earnings-list" class="earnings-table">
+                        <p class="text-muted">لا توجد أرباح بعد</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referrals Page -->
+            <div id="referrals-page" class="page-content">
+                <div class="card">
+                    <h2>الأصدقاء المُحالين</h2>
+                    <div id="referrals-list" class="referrals-table"></div>
+                </div>
+            </div>
+
+            <!-- Withdrawal Page -->
+            <div id="withdrawal-page" class="page-content">
+                <div class="card">
+                    <h2>طلب سحب الأموال</h2>
+                    <form id="withdrawal-form" class="withdrawal-form">
+                        <div class="form-group">
+                            <label>المبلغ (USD)</label>
+                            <input type="number" id="withdrawal-amount" placeholder="أدخل المبلغ" min="1" step="0.01" required>
+                            <small id="balance-info">الرصيد المتاح: $0.00</small>
+                        </div>
+                        <div class="form-group">
+                            <label>طريقة السحب</label>
+                            <select id="withdrawal-method" required>
+                                <option value="">اختر طريقة السحب</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="bank">التحويل البنكي</option>
+                                <option value="visa">بطاقة فيزا</option>
+                                <option value="stripe">Stripe</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>بيانات الحساب</label>
+                            <input type="text" id="withdrawal-details" placeholder="ادخل بيانات حسابك" required>
+                        </div>
+                        <button type="submit" class="btn-primary">طلب السحب</button>
+                    </form>
+                    <div class="card">
+                        <h3>سجل الطلبات</h3>
+                        <div id="withdrawals-history"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile-page" class="page-content">
+                <div class="card">
+                    <h2>الملف الشخصي</h2>
+                    <form id="profile-form" class="profile-form">
+                        <div class="form-group">
+                            <label>الاسم الكامل</label>
+                            <input type="text" id="profile-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>البريد الإلكتروني</label>
+                            <input type="email" id="profile-email" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الهاتف</label>
+                            <input type="tel" id="profile-phone">
+                        </div>
+                        <div class="form-group">
+                            <label>طريقة الدفع الافتراضية</label>
+                            <select id="profile-payment">
+                                <option value="">بدون تحديد</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="bank">التحويل البنكي</option>
+                                <option value="visa">بطاقة فيزا</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">حفظ التغييرات</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/dashboard-user.js"></script>
+</body>
+</html>

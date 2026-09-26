@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الإدارة - PTC Earn</title>
+    <link rel="stylesheet" href="/css/dashboard-admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>👑 إدارة النظام</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-chart-line"></i> لوحة التحكم
+                </a>
+                <a href="#" class="nav-item" data-page="users">
+                    <i class="fas fa-users"></i> المستخدمون
+                </a>
+                <a href="#" class="nav-item" data-page="tasks">
+                    <i class="fas fa-tasks"></i> إنشاء مهام
+                </a>
+                <a href="#" class="nav-item" data-page="withdrawals">
+                    <i class="fas fa-money-bill"></i> طلبات السحب
+                </a>
+                <a href="#" class="nav-item" data-page="payments">
+                    <i class="fas fa-credit-card"></i> الدفعات
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <i class="fas fa-file-csv"></i> التقارير
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i> الإعدادات
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <h1>لوحة التحكم</h1>
+                <div class="header-right">
+                    <input type="text" placeholder="بحث..." class="search-box">
+                    <div class="user-menu">
+                        <img id="admin-avatar" src="https://via.placeholder.com/40" alt="Admin">
+                        <span id="admin-name">المسؤول</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon users-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>إجمالي المستخدمين</h3>
+                            <p class="stat-value" id="total-users">0</p>
+                            <small>+10% من الشهر الماضي</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon tasks-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>إجمالي المهام</h3>
+                            <p class="stat-value" id="total-tasks">0</p>
+                            <small>نشيطة ومنجزة</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pending-icon">
+                            <i class="fas fa-hourglass"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>طلبات السحب المعلقة</h3>
+                            <p class="stat-value" id="pending-withdrawals">0</p>
+                            <small>تنتظر المعالجة</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon earnings-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>إجمالي الأرباح الموزعة</h3>
+                            <p class="stat-value" id="total-distributed">$0</p>
+                            <small>للمستخدمين</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <h2>إحصائيات المستخدمين</h2>
+                        <canvas id="users-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h2>الأرباح الموزعة</h2>
+                        <canvas id="earnings-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div id="users-page" class="page-content">
+                <div class="page-header">
+                    <h2>إدارة المستخدمين</h2>
+                    <button class="btn-primary" onclick="showAddUserForm()">+ إضافة مستخدم</button>
+                </div>
+                <div class="filters">
+                    <input type="text" placeholder="البحث عن مستخدم..." id="user-search" class="search-input">
+                    <select id="status-filter" class="filter-select">
+                        <option value="">جميع الحالات</option>
+                        <option value="active">نشط</option>
+                        <option value="suspended">معلق</option>
+                    </select>
+                </div>
+                <div id="users-table" class="data-table"></div>
+            </div>
+
+            <!-- Tasks Page -->
+            <div id="tasks-page" class="page-content">
+                <div class="page-header">
+                    <h2>إدارة المهام</h2>
+                    <button class="btn-primary" onclick="showCreateTaskForm()">+ إنشاء مهمة جديدة</button>
+                </div>
+                <div id="task-form-container" class="form-container" style="display:none;">
+                    <form id="create-task-form" class="task-form">
+                        <div class="form-group">
+                            <label>عنوان المهمة</label>
+                            <input type="text" id="task-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الوصف</label>
+                            <textarea id="task-desc"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>نوع المهمة</label>
+                            <select id="task-type" required>
+                                <option value="ad_view">مشاهدة إعلان</option>
+                                <option value="survey">استبيان</option>
+                                <option value="click">نقرة</option>
+                                <option value="app_test">اختبار تطبيق</option>
+                                <option value="email_signup">الاشتراك بالبريد</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>المكافأة (USD)</label>
+                            <input type="number" id="task-reward" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الرابط (اختياري)</label>
+                            <input type="url" id="task-link">
+                        </div>
+                        <button type="submit" class="btn-primary">إنشاء المهمة</button>
+                        <button type="button" class="btn-secondary" onclick="closeTaskForm()">إلغاء</button>
+                    </form>
+                </div>
+                <div id="tasks-list" class="data-table"></div>
+            </div>
+
+            <!-- Withdrawals Page -->
+            <div id="withdrawals-page" class="page-content">
+                <h2>طلبات السحب</h2>
+                <div class="filters">
+                    <select id="withdrawal-status-filter" class="filter-select">
+                        <option value="pending">المعلقة</option>
+                        <option value="processing">قيد المعالجة</option>
+                        <option value="completed">المكتملة</option>
+                        <option value="rejected">المرفوضة</option>
+                    </select>
+                </div>
+                <div id="withdrawals-table" class="data-table"></div>
+            </div>
+
+            <!-- Reports Page -->
+            <div id="reports-page" class="page-content">
+                <h2>التقارير</h2>
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3>تقرير المستخدمين الشهري</h3>
+                        <p>عدد المستخدمين الجدد والنشطين</p>
+                        <button class="btn-secondary" onclick="generateReport('users')">تحميل التقرير</button>
+                    </div>
+                    <div class="report-card">
+                        <h3>تقرير الأرباح</h3>
+                        <p>إجمالي الأرباح الموزعة والمعلقة</p>
+                        <button class="btn-secondary" onclick="generateReport('earnings')">تحميل التقرير</button>
+                    </div>
+                    <div class="report-card">
+                        <h3>تقرير المهام</h3>
+                        <p>عدد المهام المنجزة والمعلقة</p>
+                        <button class="btn-secondary" onclick="generateReport('tasks')">تحميل التقرير</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/dashboard-admin.js"></script>
+</body>
+</html>
